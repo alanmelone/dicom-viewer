@@ -1,0 +1,29 @@
+<div class="image-control-container">
+    <div class="cornerstone-element-wrapper">
+        <div #dicomImage class="cornerstone-element" data-index="0" oncontextmenu="return false">
+        </div>
+        <div class="direction-controls">
+            <button class="direction-btn" (click)="previousImage()">
+                <i class="mdi mdi-arrow-left"></i>
+            </button>
+            <button class="direction-btn" (click)="nextImage()">
+                <i class="mdi mdi-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="controls-container">
+        <mat-form-field>
+            <mat-label>Маска</mat-label>
+            <mat-select>
+                <mat-option value="">Отсутсвует</mat-option>
+                <mat-option *ngFor="let mask of masks" [value]="mask.filename">{{ mask.name }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div class="chechbox-section" *ngIf="regions">
+            <mat-checkbox *ngFor="let region of regions; let i = index" [value]="i" (change)="changeRegion($event)">
+                Region {{ i }}
+            </mat-checkbox>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+.cornerstone-element-wrapper {
+    background-color: black;
+    width: 1024px;
+    height: 800px;
+    box-shadow: 0 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    .cornerstone-element {
+        height: calc(100% - 60px);
+        width: 100%;
+    }
+    .direction-controls {
+        height: 60px;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+}
+
+.direction-btn {
+    border: 0;
+    height: 60px;
+    width: 60px;
+    background-color: black;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+    &:hover {
+        background-color: white;
+        color: black;
+    }
+}
+
+.image-control-container {
+    display: flex;
+    width: 100%;
+    margin-top: 20px;
+    justify-content: space-between;
+}
+
+.controls-container {
+    margin-left: 25px;
+    width: 300px;
+    .chechbox-section {
+        display: flex;
+        flex-direction: column;
+    }
+}

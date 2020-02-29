@@ -1,0 +1,113 @@
+{
+    "CT Series 2.jpg53497": {
+        "filename": "CT Series 2.jpg",
+        "size": 53497,
+        "masks": [
+            {
+                "name": "sick 1",
+                "filename": "test.png"
+            },
+            {
+                "name": "sick 2",
+                "filename": "test2.png"
+            }
+        ],
+        "regions": [
+            {
+                "shape_attributes": {
+                    "name": "polyline",
+                    "all_points_x": [
+                        141,
+                        144,
+                        166,
+                        195,
+                        215,
+                        218,
+                        241,
+                        216,
+                        197,
+                        165,
+                        148,
+                        140
+                    ],
+                    "all_points_y": [
+                        290,
+                        316,
+                        333,
+                        322,
+                        302,
+                        296,
+                        279,
+                        248,
+                        234,
+                        237,
+                        258,
+                        277
+                    ]
+                },
+                "region_attributes": {
+                    "name": "not_defined",
+                    "type": "unknown",
+                    "image_quality": {
+                        "good": true,
+                        "frontal": true,
+                        "good_illumination": true
+                    }
+                }
+            },
+            {
+                "shape_attributes": {
+                    "name": "polyline",
+                    "all_points_x": [
+                        257,
+                        258,
+                        278,
+                        277,
+                        301,
+                        312,
+                        325,
+                        347,
+                        366,
+                        381,
+                        365,
+                        322,
+                        290,
+                        278,
+                        259
+                    ],
+                    "all_points_y": [
+                        278,
+                        269,
+                        256,
+                        232,
+                        220,
+                        224,
+                        217,
+                        221,
+                        243,
+                        278,
+                        329,
+                        355,
+                        340,
+                        309,
+                        285
+                    ]
+                },
+                "region_attributes": {
+                    "name": "not_defined",
+                    "type": "unknown",
+                    "image_quality": {
+                        "good": true,
+                        "frontal": true,
+                        "good_illumination": true
+                    }
+                }
+            }
+        ],
+        "file_attributes": {
+            "caption": "",
+            "public_domain": "no",
+            "image_url": ""
+        }
+    }
+}
