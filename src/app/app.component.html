@@ -3,6 +3,6 @@
 
     </div>
 
-    <ia-image-control></ia-image-control>
-
+    <ia-image-control *ngIf="files; else imageLoader" [dicomFiles]="files"></ia-image-control>
+    <ng-template #imageLoader><ia-image-loader (onDicomFileUploaded)="dicomUploaded($event)"></ia-image-loader></ng-template>
 </div>

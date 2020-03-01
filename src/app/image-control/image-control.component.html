@@ -6,6 +6,10 @@
             <button class="direction-btn" (click)="previousImage()">
                 <i class="mdi mdi-arrow-left"></i>
             </button>
+            <button class="direction-btn" (click)="timerId ? stopSlideshow() : startSlideshow()">
+                <i *ngIf="timerId; else playSlideshow" class="mdi mdi-stop"></i>
+                <ng-template #playSlideshow><i class="mdi mdi-play"></i></ng-template>
+            </button>
             <button class="direction-btn" (click)="nextImage()">
                 <i class="mdi mdi-arrow-right"></i>
             </button>
@@ -15,7 +19,7 @@
     <div class="controls-container">
         <mat-form-field>
             <mat-label>Маска</mat-label>
-            <mat-select>
+            <mat-select #layerSelect (selectionChange)="changeLayer($event)">
                 <mat-option value="">Отсутсвует</mat-option>
                 <mat-option *ngFor="let mask of masks" [value]="mask.filename">{{ mask.name }}</mat-option>
             </mat-select>

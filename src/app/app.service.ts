@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, from } from 'rxjs';
+import { Observable, from, Subscriber } from 'rxjs';
 import * as cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader'
 import * as cornerstoneWebImageLoader from 'cornerstone-web-image-loader';
 import * as dicomParser from "dicom-parser";
 import * as cornerstone from 'cornerstone-core'
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Annotation } from './models/annotation.model';
 import { AnnotationFile } from './models/annotation-file.model';
+import { createImage } from './helpers/load-image';
 
 @Injectable({ providedIn: 'root' })
 export class AppService {
@@ -31,13 +31,36 @@ export class AppService {
         return this.httpClient.get<Map<string, AnnotationFile>>(`http://localhost:4200/assets/${filename}.json`, {headers: headers});
     }
 
-    fetchDicomImage(filename: string): Observable<any> {
-        return from(cornerstone.loadAndCacheImage(`wadouri:http://localhost:4200/assets/${filename}.dcm`));
+    getFile(file: File) {
+        const fileId = cornerstoneWADOImageLoader.wadouri.fileManager.add(file);
+        return from(cornerstone.loadAndCacheImage(fileId));
     }
 
-    fetchLayersImage(filenames: string[]): Observable<any[]>{
-        const promises = [];
-        filenames.forEach(filename => promises.push(cornerstone.loadAndCacheImage(`http://localhost:4200/assets/${filename}`)))
-        return from(Promise.all(promises));
+    getLayerImage(file: File) {
+        const fileReader = new FileReader();
+
+        return new Observable(subscriber => {
+            fileReader.onload = () => {
+                const layerImage = new Image();
+                layerImage.src = fileReader.result as string;
+                subscriber.next(createImage(layerImage, file.name));
+                subscriber.complete();
+            }
+
+            fileReader.readAsDataURL(file);
+        })
+    }
+
+    getAnnotationsFromFile(annotationFile) {
+        const fileReader = new FileReader();
+
+        return new Observable(subscriber => {
+            fileReader.onload = () => {
+                subscriber.next(JSON.parse(fileReader.result as string));
+                subscriber.complete();
+            }
+
+            fileReader.readAsText(annotationFile);
+        });
     }
 }
