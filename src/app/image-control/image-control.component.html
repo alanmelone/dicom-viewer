@@ -21,7 +21,7 @@
             <mat-label>Маска</mat-label>
             <mat-select #layerSelect (selectionChange)="changeLayer($event)">
                 <mat-option value="">Отсутсвует</mat-option>
-                <mat-option *ngFor="let mask of masks" [value]="mask.filename">{{ mask.name }}</mat-option>
+                <mat-option *ngFor="let mask of masks" [value]="mask.filename">{{ mask.name | maskTitle }}</mat-option>
             </mat-select>
         </mat-form-field>
         <div class="chechbox-section" *ngIf="regions">

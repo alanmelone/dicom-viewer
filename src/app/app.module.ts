@@ -10,12 +10,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input'
 import { ImageLoaderComponent } from './image-loader/image-loader.component';
+import { MaskTitlePipe } from './pipes/mask-title.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     ImageControlComponent,
-    ImageLoaderComponent
+    ImageLoaderComponent,
+    MaskTitlePipe
   ],
   imports: [
     BrowserModule,

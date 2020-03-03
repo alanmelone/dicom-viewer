@@ -1,19 +1,15 @@
-import { AfterViewInit, Component, OnInit, ViewChild, Input } from '@angular/core';
 import * as cornerstone from 'cornerstone-core';
-import * as cornerstoneMath from 'cornerstone-math';
 import * as cornerstoneTools from 'cornerstone-tools';
-import * as Hammer from 'hammerjs';
-import { AppService } from '../app.service';
-import { AnnotationFile } from '../models/annotation-file.model';
-import { Region } from '../models/region.model';
-import { Mask } from '../models/mask.model';
-import { DicomFile } from '../models/dicom-file.model';
-import { Observable, combineLatest } from 'rxjs';
+import { combineLatest } from 'rxjs';
+
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
 
-cornerstoneTools.external.cornerstone = cornerstone;
-cornerstoneTools.external.Hammer = Hammer;
-cornerstoneTools.external.cornerstoneMath = cornerstoneMath;
+import { AppService } from '../app.service';
+import { AnnotationFile } from '../models/annotation-file.model';
+import { DicomFile } from '../models/dicom-file.model';
+import { Mask } from '../models/mask.model';
+import { Region } from '../models/region.model';
 
 @Component({
     selector: 'ia-image-control',
@@ -30,19 +26,19 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
     @Input()
     public dicomFiles: DicomFile[] = [];
 
-    public regions: Region[];
+    public regions: Region[] = [];
     public masks: Mask[] = [];
 
     public timerId;
 
     private selectedRegionIds: number[] = [];
-    private currentDicom = this.dicomFiles[0];
+    private currentDicom: DicomFile;
 
     private imageAnnotations = {};
 
     private mainLayerId: string;
 
-    private currentLayerId: string;
+    private currentMaskLayerId: string;
 
     constructor(
         private appService: AppService
@@ -52,29 +48,34 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
         this.currentDicom = this.dicomFiles[0];
         this.dicomImage.nativeElement.addEventListener('cornerstoneimagerendered', (e) => {
             cornerstone.setToPixelCoordinateSystem(e.detail.enabledElement, e.detail.canvasContext);
-            if (!this.imageAnnotations) {
+
+            this.regions = [];
+
+            if (this.imageAnnotations === {}) {
                 return;
             }
 
             const context = e.detail.canvasContext;
+            const annotationFile = this.imageAnnotations[Object.entries(this.imageAnnotations)[0][0]] as AnnotationFile;
 
-            this.regions = (this.imageAnnotations[Object.entries(this.imageAnnotations)[0][0]] as AnnotationFile).regions;
-            this.regions.forEach((r, index) => {
-                if (this.selectedRegionIds.includes(index)) {
-                    const xCoords = r.shape_attributes.all_points_x;
-                    const yCoords = r.shape_attributes.all_points_y;
+                this.regions = annotationFile.regions;
+                this.regions.forEach((r, index) => {
+                    if (this.selectedRegionIds.includes(index)) {
+                        const xCoords = r.shape_attributes.all_points_x;
+                        const yCoords = r.shape_attributes.all_points_y;
 
-                    context.beginPath();
-                    context.moveTo(xCoords[0], yCoords[0]);
-                    for (let i = 1; i < xCoords.length; i++) {
-                        context.lineTo(xCoords[i], yCoords[i]);
+                        context.beginPath();
+                        context.moveTo(xCoords[0], yCoords[0]);
+                        for (let i = 1; i < xCoords.length; i++) {
+                            context.lineTo(xCoords[i], yCoords[i]);
+                        }
+                        context.closePath();
+                        context.fillStyle = 'rgba(255, 0, 0, 0.4)'
+                        context.fill();
                     }
-                    context.closePath();
-                    context.fillStyle = 'rgba(255, 0, 0, 0.4)'
-                    context.fill();
-                }
-            })
+                })
         });
+
 
         this.imageAnnotations = this.appService.getAnnotationsFromFile(this.currentDicom.annotationFile).subscribe(imageAnnotations => {
             this.imageAnnotations = imageAnnotations
@@ -87,7 +88,9 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
             showSVGCursors: true
         });
 
-        cornerstone.enable(this.dicomImage.nativeElement);
+        cornerstone.enable(this.dicomImage.nativeElement, {
+            render: 'webgl'
+        });
 
         this.appService.getFile(this.currentDicom.dicomFile).subscribe(image => {
             this.displayImage(image);
@@ -102,8 +105,8 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
     }
 
     changeLayer(event) {
-        if (this.currentLayerId) {
-            cornerstone.removeLayer(this.dicomImage.nativeElement, this.currentLayerId);
+        if (this.currentMaskLayerId) {
+            cornerstone.removeLayer(this.dicomImage.nativeElement, this.currentMaskLayerId);
         }
         if (!event.value) {
             cornerstone.updateImage(this.dicomImage.nativeElement);
@@ -112,7 +115,7 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
         const maskFile = this.currentDicom.maskFiles.find(mf => mf.name === event.value)
         this.appService.getLayerImage(maskFile)
             .subscribe(image => {
-                this.currentLayerId = cornerstone.addLayer(this.dicomImage.nativeElement, image, {
+                this.currentMaskLayerId = cornerstone.addLayer(this.dicomImage.nativeElement, image, {
                     opacity: 0.4
                 })
 
@@ -132,8 +135,8 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
     }
 
     nextImage() {
-        if (this.currentLayerId) {
-            cornerstone.removeLayer(this.dicomImage.nativeElement, this.currentLayerId);
+        if (this.currentMaskLayerId) {
+            cornerstone.removeLayer(this.dicomImage.nativeElement, this.currentMaskLayerId);
         }
 
         if (this.currentDicom === this.dicomFiles[this.dicomFiles.length - 1]) {
@@ -147,8 +150,8 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
     }
 
     previousImage() {
-        if (this.currentLayerId) {
-            cornerstone.removeLayer(this.dicomImage.nativeElement, this.currentLayerId);
+        if (this.currentMaskLayerId) {
+            cornerstone.removeLayer(this.dicomImage.nativeElement, this.currentMaskLayerId);
         }
 
         if (this.currentDicom === this.dicomFiles[0]) {
@@ -162,7 +165,7 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
     }
 
     startSlideshow() {
-        this.timerId = setInterval(() => this.nextImage(), 2000);
+        this.timerId = setInterval(() => this.nextImage(), 500);
     }
 
     stopSlideshow() {
@@ -176,7 +179,7 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
         this.layerSelect.value = '';
         const loadImage$ = this.appService.getFile(this.currentDicom.dicomFile);
         const annotations$ = this.appService.getAnnotationsFromFile(this.currentDicom.annotationFile);
-        combineLatest(annotations$, loadImage$).subscribe(([annotations, image]) => {
+        combineLatest([annotations$, loadImage$]).subscribe(([annotations, image]) => {
             this.imageAnnotations = annotations;
             this.masks = this.currentDicom.maskFiles.map(mf => ({ filename: mf.name, name: mf.name }) as Mask);
             this.displayImage(image);

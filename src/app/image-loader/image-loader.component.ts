@@ -20,9 +20,9 @@ export class ImageLoaderComponent {
             const file = files[i];
             const fullPath = file.webkitRelativePath.split('/');
             const path = fullPath[fullPath.length - 1];
-            const filename = file.name.replace(/\.[^/.]+$/, '');
+            const filename = file.name.replace(/_*[[a-z,A-Z,\s]*]*\.[^/.]+$/, '');
 
-            const dicomFile = this.dicomFiles.find(cf => cf.filename.includes(filename));
+            const dicomFile = this.dicomFiles.find(cf => cf.filename === filename);
             if (dicomFile) {
                 this.addFileToArray(dicomFile, path, file);
             } else {
@@ -32,11 +32,13 @@ export class ImageLoaderComponent {
             }
         }
         this.dicomFiles.sort((a, b) => {
-            if (a.filename < b.filename) return -1;
-            if (a.filename > b.filename) return 1;
-            return 0;
+            return this.replaceForSort(a.filename) - this.replaceForSort(b.filename)
         })
         this.onDicomFileUploaded.emit(this.dicomFiles);
+    }
+
+    private replaceForSort(string: string): number {
+        return +string.replace(/[1-9]*_/, '');
     }
 
     private addFileToArray(dicomFile: DicomFile, path, file) {

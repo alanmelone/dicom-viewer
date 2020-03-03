@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, Subscriber } from 'rxjs';
+import { Observable, from, Subscriber, of } from 'rxjs';
 import * as cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader'
 import * as cornerstoneWebImageLoader from 'cornerstone-web-image-loader';
 import * as dicomParser from "dicom-parser";
@@ -42,9 +42,11 @@ export class AppService {
         return new Observable(subscriber => {
             fileReader.onload = () => {
                 const layerImage = new Image();
+                layerImage.onload = () => {
+                    subscriber.next(createImage(layerImage, file.name));
+                    subscriber.complete();
+                }
                 layerImage.src = fileReader.result as string;
-                subscriber.next(createImage(layerImage, file.name));
-                subscriber.complete();
             }
 
             fileReader.readAsDataURL(file);
@@ -52,6 +54,9 @@ export class AppService {
     }
 
     getAnnotationsFromFile(annotationFile) {
+        if (!annotationFile) {
+            return of({});
+        }
         const fileReader = new FileReader();
 
         return new Observable(subscriber => {
