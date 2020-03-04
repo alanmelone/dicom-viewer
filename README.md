@@ -1,4 +1,4 @@
-# DicomImageAnnotator
+# DicomImageViewer
 
 This application has been completed as a part of labratory work for university discipline. It's DICOM viewer can display layers with mask and draw polygons on DICOM image. Application works with files on local disk.
 
