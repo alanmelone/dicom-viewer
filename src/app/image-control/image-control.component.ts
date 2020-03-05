@@ -51,7 +51,7 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
 
             this.regions = [];
 
-            if (this.imageAnnotations === {}) {
+            if (this.imageAnnotations === undefined || Object.entries(this.imageAnnotations)[0] === undefined) {
                 return;
             }
 
@@ -77,7 +77,7 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
         });
 
 
-        this.imageAnnotations = this.appService.getAnnotationsFromFile(this.currentDicom.annotationFile).subscribe(imageAnnotations => {
+        this.appService.getAnnotationsFromFile(this.currentDicom.annotationFile).subscribe(imageAnnotations => {
             this.imageAnnotations = imageAnnotations
         });
         this.masks = this.currentDicom.maskFiles.map(mf => ({ filename: mf.name, name: mf.name }) as Mask);
