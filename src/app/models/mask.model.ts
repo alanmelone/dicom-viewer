@@ -1,4 +1,4 @@
 export class Mask {
-    name: string;
+    name: string
     filename: string
 }
