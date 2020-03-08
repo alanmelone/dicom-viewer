@@ -7,8 +7,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "pre-commit": "lint-staged"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -67,7 +66,7 @@
   },
   "lint-staged": {
     "*.{js, jsx, ts}": [
-      "ng lint",
+      "./node_modules/tslint/bin/tslint 'src/**/*.ts'",
       "prettier --write"
     ],
     "*.{js,css,md}": "prettier --write"
