@@ -61,7 +61,7 @@ export class AppService {
 
         return new Observable(subscriber => {
             fileReader.onload = () => {
-                subscriber.next(JSON.parse(fileReader.result as string));
+                subscriber.next(JSON.parse(fileReader.result as string))
                 subscriber.complete();
             };
 
