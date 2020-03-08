@@ -65,7 +65,7 @@
     }
   },
   "lint-staged": {
-    "*.{ts}": [
+    "*.ts": [
       "./node_modules/tslint/bin/tslint 'src/**/*.ts'",
       "prettier --write"
     ],
