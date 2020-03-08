@@ -5,7 +5,7 @@ export class DicomFile {
     public maskFiles: File[];
 
     constructor(filename: string) {
-        this.filename = filename;
+        this.filename = filename
         this.maskFiles = [];
     }
 }
