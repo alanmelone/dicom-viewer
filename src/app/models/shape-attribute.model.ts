@@ -1,6 +1,6 @@
 export class ShapeAttribute {
     name: string;
+    // tslint:disable: variable-name
     all_points_x: number[];
-    one_more: string;
     all_points_y: number[];
 }
