@@ -6,5 +6,4 @@ export class MaskTitlePipe implements PipeTransform {
         const regExp = new RegExp(/[\[a-z,A-Z,\s]+\]/);
         return regExp.exec(value)[0];
     }
-
 }

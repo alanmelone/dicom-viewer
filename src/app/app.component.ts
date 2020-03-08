@@ -6,9 +6,9 @@ import * as Hammer from 'hammerjs';
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'app-root',
+    selector: 'ia-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+    styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
     public files: any[];

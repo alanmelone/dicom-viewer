@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, from, Subscriber, of } from 'rxjs';
-import * as cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader'
+import * as cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader';
 import * as cornerstoneWebImageLoader from 'cornerstone-web-image-loader';
-import * as dicomParser from "dicom-parser";
-import * as cornerstone from 'cornerstone-core'
+import * as dicomParser from 'dicom-parser';
+import * as cornerstone from 'cornerstone-core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AnnotationFile } from './models/annotation-file.model';
 import { createImage } from './helpers/load-image';
@@ -17,18 +17,18 @@ export class AppService {
         cornerstoneWADOImageLoader.webWorkerManager.initialize({
             webWorkerPath: '/assets/cornerstone/cornerstoneWADOImageLoaderWebWorker.js',
             taskConfiguration: {
-                'decodeTask': {
-                    codecsPath: '/assets/cornerstone/cornerstoneWADOImageLoaderCodecs.js'
-                }
-            }
+                decodeTask: {
+                    codecsPath: '/assets/cornerstone/cornerstoneWADOImageLoaderCodecs.js',
+                },
+            },
         });
     }
 
     getAnnotationForDicom(filename: string) {
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
-        })
-        return this.httpClient.get<Map<string, AnnotationFile>>(`http://localhost:4200/assets/${filename}.json`, {headers: headers});
+            'Content-Type': 'application/json',
+        });
+        return this.httpClient.get<Map<string, AnnotationFile>>(`http://localhost:4200/assets/${filename}.json`, { headers });
     }
 
     getFile(file: File) {
@@ -45,12 +45,12 @@ export class AppService {
                 layerImage.onload = () => {
                     subscriber.next(createImage(layerImage, file.name));
                     subscriber.complete();
-                }
+                };
                 layerImage.src = fileReader.result as string;
-            }
+            };
 
             fileReader.readAsDataURL(file);
-        })
+        });
     }
 
     getAnnotationsFromFile(annotationFile) {
@@ -63,7 +63,7 @@ export class AppService {
             fileReader.onload = () => {
                 subscriber.next(JSON.parse(fileReader.result as string));
                 subscriber.complete();
-            }
+            };
 
             fileReader.readAsText(annotationFile);
         });
