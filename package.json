@@ -59,16 +59,16 @@
     "tslint": "~5.18.0",
     "typescript": "~3.7.5"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "*.{js, jsx, ts}": [
       "ng lint",
       "prettier --write"
     ],
     "*.{js,css,md}": "prettier --write"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }
