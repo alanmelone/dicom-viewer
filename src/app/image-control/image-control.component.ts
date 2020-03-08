@@ -14,7 +14,7 @@ import { Region } from '../models/region.model';
 @Component({
     selector: 'ia-image-control',
     templateUrl: './image-control.component.html',
-    styleUrls: ['./image-control.component.scss']
+    styleUrls: ['./image-control.component.scss'],
 })
 export class ImageControlComponent implements OnInit, AfterViewInit {
     @ViewChild('layerSelect')
@@ -40,13 +40,11 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
 
     private currentMaskLayerId: string;
 
-    constructor(
-        private appService: AppService
-    ) { }
+    constructor(private appService: AppService) {}
 
     ngOnInit(): void {
         this.currentDicom = this.dicomFiles[0];
-        this.dicomImage.nativeElement.addEventListener('cornerstoneimagerendered', (e) => {
+        this.dicomImage.nativeElement.addEventListener('cornerstoneimagerendered', e => {
             cornerstone.setToPixelCoordinateSystem(e.detail.enabledElement, e.detail.canvasContext);
 
             this.regions = [];
@@ -58,38 +56,37 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
             const context = e.detail.canvasContext;
             const annotationFile = this.imageAnnotations[Object.entries(this.imageAnnotations)[0][0]] as AnnotationFile;
 
-                this.regions = annotationFile.regions;
-                this.regions.forEach((r, index) => {
-                    if (this.selectedRegionIds.includes(index)) {
-                        const xCoords = r.shape_attributes.all_points_x;
-                        const yCoords = r.shape_attributes.all_points_y;
+            this.regions = annotationFile.regions;
+            this.regions.forEach((r, index) => {
+                if (this.selectedRegionIds.includes(index)) {
+                    const xCoords = r.shape_attributes.all_points_x;
+                    const yCoords = r.shape_attributes.all_points_y;
 
-                        context.beginPath();
-                        context.moveTo(xCoords[0], yCoords[0]);
-                        for (let i = 1; i < xCoords.length; i++) {
-                            context.lineTo(xCoords[i], yCoords[i]);
-                        }
-                        context.closePath();
-                        context.fillStyle = 'rgba(255, 0, 0, 0.4)'
-                        context.fill();
+                    context.beginPath();
+                    context.moveTo(xCoords[0], yCoords[0]);
+                    for (let i = 1; i < xCoords.length; i++) {
+                        context.lineTo(xCoords[i], yCoords[i]);
                     }
-                })
+                    context.closePath();
+                    context.fillStyle = 'rgba(255, 0, 0, 0.4)';
+                    context.fill();
+                }
+            });
         });
-
 
         this.appService.getAnnotationsFromFile(this.currentDicom.annotationFile).subscribe(imageAnnotations => {
-            this.imageAnnotations = imageAnnotations
+            this.imageAnnotations = imageAnnotations;
         });
-        this.masks = this.currentDicom.maskFiles.map(mf => ({ filename: mf.name, name: mf.name }) as Mask);
+        this.masks = this.currentDicom.maskFiles.map(mf => ({ filename: mf.name, name: mf.name } as Mask));
     }
 
     ngAfterViewInit(): void {
         cornerstoneTools.init({
-            showSVGCursors: true
+            showSVGCursors: true,
         });
 
         cornerstone.enable(this.dicomImage.nativeElement, {
-            render: 'webgl'
+            render: 'webgl',
         });
 
         this.appService.getFile(this.currentDicom.dicomFile).subscribe(image => {
@@ -100,8 +97,10 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
             cornerstoneTools.addTool(PanTool);
             cornerstoneTools.addTool(ZoomMouseWheelTool);
             cornerstoneTools.setToolActive('Pan', { mouseButtonMask: 1 });
-            cornerstoneTools.setToolActive('ZoomMouseWheel', { mouseButtonMask: 1 })
-        })
+            cornerstoneTools.setToolActive('ZoomMouseWheel', {
+                mouseButtonMask: 1,
+            });
+        });
     }
 
     changeLayer(event) {
@@ -112,20 +111,19 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
             cornerstone.updateImage(this.dicomImage.nativeElement);
             return;
         }
-        const maskFile = this.currentDicom.maskFiles.find(mf => mf.name === event.value)
-        this.appService.getLayerImage(maskFile)
-            .subscribe(image => {
-                this.currentMaskLayerId = cornerstone.addLayer(this.dicomImage.nativeElement, image, {
-                    opacity: 0.4
-                })
+        const maskFile = this.currentDicom.maskFiles.find(mf => mf.name === event.value);
+        this.appService.getLayerImage(maskFile).subscribe(image => {
+            this.currentMaskLayerId = cornerstone.addLayer(this.dicomImage.nativeElement, image, {
+                opacity: 0.4,
+            });
 
-                cornerstone.updateImage(this.dicomImage.nativeElement);
-            })
+            cornerstone.updateImage(this.dicomImage.nativeElement);
+        });
     }
 
     changeRegion(event) {
         if (event.checked) {
-            this.selectedRegionIds.push(event.source.value)
+            this.selectedRegionIds.push(event.source.value);
         } else {
             const indexOfElement = this.selectedRegionIds.findIndex(r => r === event.source.value);
             this.selectedRegionIds.splice(indexOfElement, 1);
@@ -181,7 +179,7 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
         const annotations$ = this.appService.getAnnotationsFromFile(this.currentDicom.annotationFile);
         combineLatest([annotations$, loadImage$]).subscribe(([annotations, image]) => {
             this.imageAnnotations = annotations;
-            this.masks = this.currentDicom.maskFiles.map(mf => ({ filename: mf.name, name: mf.name }) as Mask);
+            this.masks = this.currentDicom.maskFiles.map(mf => ({ filename: mf.name, name: mf.name } as Mask));
             this.displayImage(image);
         });
     }
@@ -189,7 +187,7 @@ export class ImageControlComponent implements OnInit, AfterViewInit {
     private displayImage(image) {
         this.mainLayerId
             ? cornerstone.setLayerImage(this.dicomImage.nativeElement, image, this.mainLayerId)
-            : this.mainLayerId = cornerstone.addLayer(this.dicomImage.nativeElement, image);
+            : (this.mainLayerId = cornerstone.addLayer(this.dicomImage.nativeElement, image));
 
         cornerstone.updateImage(this.dicomImage.nativeElement);
     }

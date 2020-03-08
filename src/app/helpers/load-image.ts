@@ -10,71 +10,70 @@ let lastImageIdDrawn;
  * @param imageId - the imageId for this image
  * @returns Cornerstone Image Object
  */
-export function createImage (image, imageId) {
-  // extract the attributes we need
-  const rows = image.naturalHeight;
-  const columns = image.naturalWidth;
+export function createImage(image, imageId) {
+    // extract the attributes we need
+    const rows = image.naturalHeight;
+    const columns = image.naturalWidth;
 
-  function getPixelData () {
-    const imageData = getImageData();
+    function getPixelData() {
+        const imageData = getImageData();
 
-
-    return imageData.data;
-  }
-
-  function getImageData () {
-    let context;
-
-    if (lastImageIdDrawn === imageId) {
-      context = canvas.getContext('2d');
-    } else {
-      canvas.height = image.naturalHeight;
-      canvas.width = image.naturalWidth;
-      context = canvas.getContext('2d');
-      context.drawImage(image, 0, 0);
-      lastImageIdDrawn = imageId;
+        return imageData.data;
     }
 
-    return context.getImageData(0, 0, image.naturalWidth, image.naturalHeight);
-  }
+    function getImageData() {
+        let context;
 
-  function getCanvas () {
-    if (lastImageIdDrawn === imageId) {
-      return canvas;
+        if (lastImageIdDrawn === imageId) {
+            context = canvas.getContext('2d');
+        } else {
+            canvas.height = image.naturalHeight;
+            canvas.width = image.naturalWidth;
+            context = canvas.getContext('2d');
+            context.drawImage(image, 0, 0);
+            lastImageIdDrawn = imageId;
+        }
+
+        return context.getImageData(0, 0, image.naturalWidth, image.naturalHeight);
     }
 
-    canvas.height = image.naturalHeight;
-    canvas.width = image.naturalWidth;
-    const context = canvas.getContext('2d');
+    function getCanvas() {
+        if (lastImageIdDrawn === imageId) {
+            return canvas;
+        }
 
-    context.drawImage(image, 0, 0);
-    lastImageIdDrawn = imageId;
+        canvas.height = image.naturalHeight;
+        canvas.width = image.naturalWidth;
+        const context = canvas.getContext('2d');
 
-    return canvas;
-  }
+        context.drawImage(image, 0, 0);
+        lastImageIdDrawn = imageId;
 
-  // Extract the various attributes we need
-  return {
-    imageId,
-    minPixelValue: 0,
-    maxPixelValue: 255,
-    slope: 1,
-    intercept: 0,
-    windowCenter: 128,
-    windowWidth: 255,
-    render: cornerstone.renderWebImage,
-    getPixelData,
-    getCanvas,
-    getImage: () => image,
-    rows,
-    columns,
-    height: rows,
-    width: columns,
-    color: true,
-    rgba: false,
-    columnPixelSpacing: undefined,
-    rowPixelSpacing: undefined,
-    invert: false,
-    sizeInBytes: rows * columns * 4
-  };
+        return canvas;
+    }
+
+    // Extract the various attributes we need
+    return {
+        imageId,
+        minPixelValue: 0,
+        maxPixelValue: 255,
+        slope: 1,
+        intercept: 0,
+        windowCenter: 128,
+        windowWidth: 255,
+        render: cornerstone.renderWebImage,
+        getPixelData,
+        getCanvas,
+        getImage: () => image,
+        rows,
+        columns,
+        height: rows,
+        width: columns,
+        color: true,
+        rgba: false,
+        columnPixelSpacing: undefined,
+        rowPixelSpacing: undefined,
+        invert: false,
+        sizeInBytes: rows * columns * 4,
+    };
 }

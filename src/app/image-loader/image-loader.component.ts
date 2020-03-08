@@ -7,16 +7,15 @@ import { DicomFile } from '../models/dicom-file.model';
     styleUrls: ['./image-loader.component.scss']
 })
 export class ImageLoaderComponent {
-
     @Output()
-    public onDicomFileUploaded  = new EventEmitter<DicomFile[]>();
+    public fileUploaded = new EventEmitter<DicomFile[]>();
 
     private dicomFiles: DicomFile[] = [];
 
     constructor() {}
 
     public onFileUpload(files) {
-        for (let i = 0; i < files.length; i++) {
+        for (const i of files) {
             const file = files[i];
             const fullPath = file.webkitRelativePath.split('/');
             const path = fullPath[fullPath.length - 1];
@@ -26,19 +25,19 @@ export class ImageLoaderComponent {
             if (dicomFile) {
                 this.addFileToArray(dicomFile, path, file);
             } else {
-                let dicomFile = new DicomFile(filename);
-                dicomFile = this.addFileToArray(dicomFile, path, file);
-                this.dicomFiles.push(dicomFile);
+                let newDicomFile = new DicomFile(filename);
+                newDicomFile = this.addFileToArray(newDicomFile, path, file);
+                this.dicomFiles.push(newDicomFile);
             }
         }
         this.dicomFiles.sort((a, b) => {
-            return this.replaceForSort(a.filename) - this.replaceForSort(b.filename)
-        })
-        this.onDicomFileUploaded.emit(this.dicomFiles);
+            return this.replaceForSort(a.filename) - this.replaceForSort(b.filename);
+        });
+        this.fileUploaded.emit(this.dicomFiles);
     }
 
-    private replaceForSort(string: string): number {
-        return +string.replace(/[1-9]*_/, '');
+    private replaceForSort(originalString: string): number {
+        return +originalString.replace(/[1-9]*_/, '');
     }
 
     private addFileToArray(dicomFile: DicomFile, path, file) {
@@ -46,7 +45,7 @@ export class ImageLoaderComponent {
             dicomFile.dicomFile = file;
         }
         if (path.includes('.json')) {
-            dicomFile.annotationFile = file
+            dicomFile.annotationFile = file;
         }
         if (path.includes('.png')) {
             dicomFile.maskFiles.push(file);
