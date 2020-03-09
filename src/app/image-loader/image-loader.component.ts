@@ -4,7 +4,7 @@ import { DicomFile } from '../models/dicom-file.model';
 @Component({
     selector: 'ia-image-loader',
     templateUrl: './image-loader.component.html',
-    styleUrls: ['./image-loader.component.scss']
+    styleUrls: ['./image-loader.component.scss'],
 })
 export class ImageLoaderComponent {
     @Output()
@@ -15,8 +15,7 @@ export class ImageLoaderComponent {
     constructor() {}
 
     public onFileUpload(files) {
-        for (const i of files) {
-            const file = files[i];
+        for (const file of files) {
             const fullPath = file.webkitRelativePath.split('/');
             const path = fullPath[fullPath.length - 1];
             const filename = file.name.replace(/_*[[a-z,A-Z,\s]*]*\.[^/.]+$/, '');

@@ -4,5 +4,5 @@
     </div>
 
     <ia-image-control *ngIf="files; else imageLoader" [dicomFiles]="files"></ia-image-control>
-    <ng-template #imageLoader><ia-image-loader (onDicomFileUploaded)="dicomUploaded($event)"></ia-image-loader></ng-template>
+    <ng-template #imageLoader><ia-image-loader (fileUploaded)="dicomUploaded($event)"></ia-image-loader></ng-template>
 </div>
