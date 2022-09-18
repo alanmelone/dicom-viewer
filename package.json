@@ -27,7 +27,7 @@
     "cornerstone-wado-image-loader": "^2.2.4",
     "cornerstone-web-image-loader": "^2.1.1",
     "dicom-parser": "^1.8.4",
-    "fabric": "^4.0.0-beta.7",
+    "fabric": "^5.2.4",
     "file-system": "^2.2.2",
     "hammerjs": "^2.0.8",
     "rxjs": "~6.5.4",
