@@ -54,7 +54,7 @@
     "karma-jasmine-html-reporter": "^1.4.2",
     "lint-staged": "^10.0.8",
     "prettier": "^1.19.1",
-    "protractor": "~5.4.3",
+    "protractor": "~5.4.4",
     "ts-node": "~8.3.0",
     "tslint": "~5.18.0",
     "typescript": "~3.7.5"
